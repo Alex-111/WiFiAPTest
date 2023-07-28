@@ -7,6 +7,9 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Threading;
 
+
+//nanoff --target ESP32_S3 --update --serialport COM6 --clrfile "c:\temp\nanoCLR.bin"
+
 namespace WifiAP
 {
     public class Program
@@ -24,16 +27,16 @@ namespace WifiAP
 
         public static void Main()
         {
-            
+
             Wireless80211.Disable();
-            
+
             if (WirelessAP.Setup() == false)
             {
                 // Reboot device to Activate Access Point on restart
                 Debug.WriteLine($"Setup Soft AP, Rebooting device");
                 Power.RebootDevice();
             }
-          
+
             var dhcpserver = new DhcpServer
             {
                 CaptivePortalUrl = $"http://{WirelessAP.SoftApIP}"
@@ -45,21 +48,21 @@ namespace WifiAP
             }
 
             Debug.WriteLine($"Running Soft AP, waiting for client to connect");
-           
-        
+
+
             NetworkChange.NetworkAPStationChanged += NetworkChange_NetworkAPStationChanged;
-          
-            server.Start(localIP);
+
+           
 
             Thread.Sleep(Timeout.Infinite);
         }
 
-      
 
-     
+
+
         private static void NetworkChange_NetworkAPStationChanged(int NetworkIndex, NetworkAPStationEventArgs e)
         {
-           
+
             try
             {
                 Debug.WriteLine($"NetworkAPStationChanged event Index:{NetworkIndex} Connected:{e.IsConnected} Station:{e.StationIndex} ");
@@ -72,9 +75,13 @@ namespace WifiAP
 
                     string macString = BitConverter.ToString(station.MacAddress);
                     Debug.WriteLine($"Station mac {macString} Rssi:{station.Rssi} PhyMode:{station.PhyModes} ");
-
+                    server.Start(localIP);
                 }
-              
+                else
+                {
+                    server.Stop();
+                }
+
             }
             catch (Exception ex)
             {

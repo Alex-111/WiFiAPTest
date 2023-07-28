@@ -33,6 +33,7 @@ namespace WifiAP
         {
             if (_listener != null)
             {
+                _listener.Abort();
                 _listener.Stop();
                 _listener = null;
             }
