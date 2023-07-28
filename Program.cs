@@ -52,7 +52,8 @@ namespace WifiAP
 
             NetworkChange.NetworkAPStationChanged += NetworkChange_NetworkAPStationChanged;
 
-           
+
+            server.Start(localIP);
 
             Thread.Sleep(Timeout.Infinite);
         }
@@ -75,11 +76,11 @@ namespace WifiAP
 
                     string macString = BitConverter.ToString(station.MacAddress);
                     Debug.WriteLine($"Station mac {macString} Rssi:{station.Rssi} PhyMode:{station.PhyModes} ");
-                    server.Start(localIP);
+                    //server.Start(localIP);
                 }
                 else
                 {
-                    server.Stop();
+                    //server.Stop();
                 }
 
             }
