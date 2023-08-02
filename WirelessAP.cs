@@ -51,7 +51,7 @@ namespace WifiAP
                             WirelessAPConfiguration.ConfigurationOptions.Enable;
 
             // Set the SSID for Access Point. If not set will use default  "nano_xxxxxx"
-            //wapconf.Ssid = "MySsid";
+            wapconf.Ssid = "MySsid";
 
             // Maximum number of simultaneous connections, reserves memory for connections
             wapconf.MaxConnections = 1;
