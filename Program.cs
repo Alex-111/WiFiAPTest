@@ -76,11 +76,13 @@ namespace WifiAP
 
                     string macString = BitConverter.ToString(station.MacAddress);
                     Debug.WriteLine($"Station mac {macString} Rssi:{station.Rssi} PhyMode:{station.PhyModes} ");
-                    //server.Start(localIP);
+                    //Restart socket
+                    server.Stop();
+                    server.Start(localIP);
                 }
                 else
                 {
-                    //server.Stop();
+                   
                 }
 
             }

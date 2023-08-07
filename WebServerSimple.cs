@@ -31,35 +31,72 @@ namespace WifiAP
 
         public void Stop()
         {
+            Console.WriteLine("Stopping");
+
             if (_listener != null)
             {
-                _listener.Abort();
-                _listener.Stop();
-                _listener = null;
+
+                try
+                {
+                    _listener.Close();
+
+                }
+                catch (Exception)
+                {
+
+                }
+                try
+                {
+                    _listener.Abort();
+                }
+                catch (Exception)
+                {
+                }
+                //_listener = null;
+
+                do
+                {
+                    Thread.Sleep(300);
+                } while (_listener != null);
             }
+            Console.WriteLine("Stopped");
         }
         private void RunServer()
         {
-            _listener.Start();
 
-            while (_listener.IsListening)
+            try
             {
-                try
+
+                _listener.Start();
+
+                while (_listener.IsListening)
                 {
-                    Debug.WriteLine("listener.GetContext()");
-                    var context = _listener.GetContext();
-                    if (context != null)
-                        ProcessRequest(context);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.ToString());
+                    try
+                    {
+                        Debug.WriteLine("listener.GetContext()");
+                        var context = _listener.GetContext();
+                        if (context != null)
+                            ProcessRequest(context);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.ToString());
+                    }
+
                 }
 
+
+                //_listener.Close();
             }
-            _listener.Close();
+            catch { }
+            finally
+            {
 
-            _listener = null;
+                _listener = null;
+            }
+
+
+           
         }
 
         string resp = CreateMainPage("testpage");
@@ -68,9 +105,9 @@ namespace WifiAP
             var request = context.Request;
             var response = context.Response;
             string responseString;
-            
 
-            Debug.WriteLine("Request: "+ request.RawUrl);
+
+            Debug.WriteLine("Request: " + request.RawUrl);
 
             switch (request.HttpMethod)
             {
@@ -90,14 +127,14 @@ namespace WifiAP
                         OutPutResponse(response, resp);
                     }
                     break;
-                 
+
             }
 
             response.Close();
- 
+
         }
 
-       
+
 
         static void OutPutResponse(HttpListenerResponse response, string responseString)
         {
